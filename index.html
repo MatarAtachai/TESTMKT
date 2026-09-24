@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบสอบถามความสนใจเครื่องปรับอากาศ - B.Grimm Carrier</title>
+    
+    <!-- Load Tailwind CSS & SweetAlert2 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Load Google Fonts (Sarabun & Prompt as fallbacks for Thai Sans Neue) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Thai Sans Neue with solid fallbacks */
+        @font-face {
+            font-family: 'Thai Sans Neue';
+            src: local('Thai Sans Neue'), local('ThaiSansNeue-Regular');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --font-family: 'Thai Sans Neue', 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: radial-gradient(circle at 50% 20%, #1e4b8f 0%, #112b54 45%, #071529 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #0f172a;
+            letter-spacing: 0.015em;
+        }
+
+        /* Subtle ambient glow */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 20% 80%, rgba(30, 75, 143, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Clean White Form Container with high contrast */
+        .main-card {
+            background-color: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(3, 11, 23, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Input styling with crisp border and high legibility */
+        .readable-input {
+            background-color: #f8fafc;
+            border: 2px solid #cbd5e1;
+            color: #0f172a;
+            font-size: 1.05rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .readable-input:focus {
+            background-color: #ffffff;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+            outline: none;
+        }
+
+        .readable-input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Selectable Product Cards in Step 2 */
+        .ac-model-card {
+            border: 2px solid #e2e8f0;
+            background: #ffffff;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .ac-model-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(2, 132, 199, 0.2);
+        }
+
+        .ac-model-card:hover .ac-thumb {
+            transform: scale(1.05);
+        }
+
+        .ac-thumb {
+            transition: transform 0.3s ease;
+        }
+
+        .ac-model-card.selected {
+            border-color: #0284c7;
+            background: #f0f9ff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25), 0 14px 28px -10px rgba(2, 132, 199, 0.25);
+        }
+
+        /* Steps animation */
+        .step-panel {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .step-panel.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Step circle styling */
+        .step-dot {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between py-6 px-4 sm:px-6 lg:px-8">
+
+    <div class="ambient-glow"></div>
+
+    <header class="relative z-10 w-full max-w-3xl mx-auto mb-6">
+        <div class="flex items-center justify-between bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3.5 rounded-full shadow-lg">
+            <!-- Brand Badge -->
+            <div class="flex items-center space-x-3">
+                <span class="bg-[#0f2444] text-white font-bold italic tracking-wider px-4 py-1.5 rounded-full text-base sm:text-lg shadow-sm border border-cyan-400/30">
+                    Carrier
+                </span>
+                <span class="text-white/90 text-sm sm:text-base font-medium hidden sm:inline-block">
+                    บีกริม แคเรียร์ (ประเทศไทย)
+                </span>
+            </div>
+
+            <!-- Campaign Badge -->
+            <div class="flex items-center space-x-1.5 text-xs sm:text-sm font-semibold text-cyan-300 bg-sky-950/60 px-3.5 py-1.5 rounded-full border border-cyan-400/25">
+                <i class="fas fa-gift text-cyan-400"></i>
+                <span>แบบสอบถามข้อเสนอพิเศษ</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 w-full max-w-3xl mx-auto flex-grow flex items-center justify-center">
+        <div class="main-card w-full p-6 sm:p-10 md:p-12">
+            
+            <!-- Title Section -->
+            <div class="text-center mb-8 pb-4 border-b border-slate-100">
+                <span class="inline-block bg-sky-100 text-sky-800 text-xs sm:text-sm font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                    Customer Preference Survey
+                </span>
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0f2444] leading-tight">
+                    ค้นหาแอร์ที่เหมาะกับคุณ พร้อมรับข้อเสนอสุดพิเศษ
+                </h1>
+                <p class="text-slate-600 text-sm sm:text-base mt-2 font-normal">
+                    กรุณากรอกข้อมูลเพียง 3 ขั้นตอนสั้น ๆ เพื่อให้ทีมงานส่งสิทธิพิเศษและข้อมูลรุ่นที่ตรงใจคุณมากที่สุด
+                </p>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="mb-10 max-w-xl mx-auto">
+                <div class="flex items-center justify-between relative">
+                    <!-- Background Line -->
+                    <div class="absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0"></div>
+                    <!-- Active Fill Line -->
+                    <div id="progressFill" class="absolute top-1/2 left-0 h-1 bg-sky-600 -translate-y-1/2 transition-all duration-300 z-0" style="width: 0%;"></div>
+
+                    <!-- Step 1 Dot -->
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div id="stepDot1" class="step-dot bg-sky-600 text-white shadow-md">1</div>
+                        <span class="text-xs font-semibold text-slate-700 mt-1.5 hidden sm:block">ข้อมูลติดต่อ</span>
+                    </div>
+
+                    <!-- Step 2 Dot -->
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div id="stepDot2" class="step-dot bg-slate-200 text-slate-500">2</div>
+                        <span class="text-xs font-semibold text-slate-500 mt-1.5 hidden sm:block">ซีรีส์ที่สนใจ</span>
+                    </div>
+
+                    <!-- Step 3 Dot -->
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div id="stepDot3" class="step-dot bg-slate-200 text-slate-500">3</div>
+                        <span class="text-xs font-semibold text-slate-500 mt-1.5 hidden sm:block">ยืนยันข้อมูล</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="surveyForm" novalidate>
+                
+                <!-- STEP 1: Personal Info -->
+                <div id="step1" class="step-panel active space-y-6">
+                    <div class="bg-sky-50/70 border-l-4 border-sky-600 p-4 rounded-r-xl">
+                        <h2 class="text-lg font-bold text-[#0f2444]">ขั้นตอนที่ 1: ข้อมูลสำหรับการติดต่อกลับ</h2>
+                        <p class="text-xs sm:text-sm text-slate-600">กรอกข้อมูลเพื่อรับคำปรึกษาและการคำนวณ BTU ฟรีจากผู้เชี่ยวชาญ</p>
+                    </div>
+
+                    <div>
+                        <label for="userName" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                            ชื่อ - นามสกุล <span class="text-rose-500 font-bold">*</span>
+                        </label>
+                        <input type="text" id="userName" name="name" required placeholder="กรอกชื่อและนามสกุลของคุณ"
+                            class="readable-input w-full px-4 py-3.5 rounded-xl font-medium">
+                        <p class="text-xs text-rose-500 mt-1 hidden" id="nameError">กรุณาระบุชื่อ-นามสกุล</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="userPhone" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                                เบอร์โทรศัพท์มือถือ <span class="text-rose-500 font-bold">*</span>
+                            </label>
+                            <input type="tel" id="userPhone" name="phone" required placeholder="เช่น 0812345678" pattern="[0-9]{9,10}"
+                                class="readable-input w-full px-4 py-3.5 rounded-xl font-medium">
+                            <p class="text-xs text-rose-500 mt-1 hidden" id="phoneError">กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (9-10 หลัก)</p>
+                        </div>
+                        <div>
+                            <label for="userEmail" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                                อีเมล (สำหรับรับโบรชัวร์)
+                            </label>
+                            <input type="email" id="userEmail" name="email" placeholder="example@email.com"
+                                class="readable-input w-full px-4 py-3.5 rounded-xl font-medium">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="userLocation" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                            จังหวัดที่ต้องการติดตั้ง <span class="text-rose-500 font-bold">*</span>
+                        </label>
+                        <select id="userLocation" name="location" required class="readable-input w-full px-4 py-3.5 rounded-xl font-medium bg-white">
+                            <option value="">-- กรุณาเลือกจังหวัด --</option>
+                            <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
+                            <option value="นนทบุรี">นนทบุรี</option>
+                            <option value="ปทุมธานี">ปทุมธานี</option>
+                            <option value="สมุทรปราการ">สมุทรปราการ</option>
+                            <option value="เชียงใหม่">เชียงใหม่</option>
+                            <option value="ชลบุรี">ชลบุรี</option>
+                            <option value="ขอนแก่น">ขอนแก่น</option>
+                            <option value="ภูเก็ต">ภูเก็ต</option>
+                            <option value="อื่นๆ">จังหวัดอื่น ๆ</option>
+                        </select>
+                        <p class="text-xs text-rose-500 mt-1 hidden" id="locationError">กรุณาเลือกจังหวัด</p>
+                    </div>
+                </div>
+
+                <div id="step2" class="step-panel space-y-6">
+                    <div class="bg-sky-50/70 border-l-4 border-sky-600 p-4 rounded-r-xl">
+                        <h2 class="text-lg font-bold text-[#0f2444]">ขั้นตอนที่ 2: เลือกรุ่นแอร์ที่คุณสนใจมากที่สุด</h2>
+                        <p class="text-xs sm:text-sm text-slate-600">คลิกเลือก 1 รุ่นที่ตรงกับสไตล์การแต่งห้องหรือการใช้งานของคุณ</p>
+                    </div>
+
+                    <!-- Hidden Input to store selection -->
+                    <input type="hidden" id="selectedModel" name="selected_model" required>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- Option 1: Beyond X -->
+                        <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('Beyond X (หน้ากากลายไม้)', this)">
+                            <!-- Image Display Container -->
+                            <div class="w-full h-36 bg-gradient-to-b from-amber-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-amber-100/60">
+                                <img src="images/beyond-x.png" 
+                                     alt="Carrier Beyond X" 
+                                     class="ac-thumb max-h-full object-contain filter drop-shadow-md"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x220/fef3c7/92400e?text=Beyond+X+(Wood+Pattern)';">
+                                <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-amber-800 px-2 py-0.5 rounded-full shadow-xs">
+                                    Wood Series
+                                </span>
+                            </div>
+
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="inline-block px-2.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800 rounded-md mb-1.5">พรีเมียมดีไซน์</span>
+                                    <h3 class="text-xl font-extrabold text-slate-900">beyond <span class="text-sky-600">X</span></h3>
+                                </div>
+                                <div class="model-check w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center text-white text-xs">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-600 mt-2">หน้ากากลายไม้ธรรมชาติ หรูหรา เงียบสนิท และฟอกอากาศประจุลบ</p>
+                            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-sky-700 flex items-center">
+                                <span>คลิกเพื่อเลือกรุ่นนี้</span>
+                                <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Option 2: XInverter Plus -->
+                        <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('XInverter Plus (ประหยัดไฟสูงสุด)', this)">
+                            <!-- Image Display Container -->
+                            <div class="w-full h-36 bg-gradient-to-b from-sky-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-sky-100/60">
+                                <img src="images/xinverter-plus.png" 
+                                     alt="Carrier XInverter Plus" 
+                                     class="ac-thumb max-h-full object-contain filter drop-shadow-md"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x220/e0f2fe/0369a1?text=XInverter+Plus';">
+                                <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-sky-800 px-2 py-0.5 rounded-full shadow-xs">
+                                    No.1 Best Seller
+                                </span>
+                            </div>
+
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="inline-block px-2.5 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 rounded-md mb-1.5">รุ่นยอดนิยมอันดับ 1</span>
+                                    <h3 class="text-xl font-extrabold text-slate-900"><span class="text-sky-600">X</span>INVERTER Plus</h3>
+                                </div>
+                                <div class="model-check w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center text-white text-xs">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-600 mt-2">ดีไซน์สีดำ/ขาวโมเดิร์น ประหยัดไฟเบอร์ 5 สูงสุด 5 ดาว สั่งงานผ่าน Wi-Fi</p>
+                            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-sky-700 flex items-center">
+                                <span>คลิกเพื่อเลือกรุ่นนี้</span>
+                                <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Option 3: Copper Ion -->
+                        <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('Copper Ion (คอยล์ทองแดง ฟอกอากาศ)', this)">
+                            <!-- Image Display Container -->
+                            <div class="w-full h-36 bg-gradient-to-b from-emerald-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-emerald-100/60">
+                                <img src="images/copper-ion.png" 
+                                     alt="Carrier Copper Ion" 
+                                     class="ac-thumb max-h-full object-contain filter drop-shadow-md"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x220/d1fae5/065f46?text=Copper+Ion';">
+                                <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-emerald-800 px-2 py-0.5 rounded-full shadow-xs">
+                                    Durable & Clean
+                                </span>
+                            </div>
+
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="inline-block px-2.5 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-md mb-1.5">ทนทานคุ้มค่า</span>
+                                    <h3 class="text-xl font-extrabold text-slate-900">COPPER <span class="text-sky-600">ION</span></h3>
+                                </div>
+                                <div class="model-check w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center text-white text-xs">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-600 mt-2">คอยล์ทองแดงแท้ 100% เคลือบสารต้านการกัดกร่อน พร้อมแผ่นกรองไอออนเงิน</p>
+                            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-sky-700 flex items-center">
+                                <span>คลิกเพื่อเลือกรุ่นนี้</span>
+                                <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Option 4: Copper Seal -->
+                        <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('Copper Seal (เย็นฉ่ำ สบายกระเป๋า)', this)">
+                            <!-- Image Display Container -->
+                            <div class="w-full h-36 bg-gradient-to-b from-purple-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-purple-100/60">
+                                <img src="images/copper-seal.png" 
+                                     alt="Carrier Copper Seal" 
+                                     class="ac-thumb max-h-full object-contain filter drop-shadow-md"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x220/f3e8ff/6b21a8?text=Copper+Seal';">
+                                <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-purple-800 px-2 py-0.5 rounded-full shadow-xs">
+                                    Best Value
+                                </span>
+                            </div>
+
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <span class="inline-block px-2.5 py-0.5 text-xs font-semibold bg-purple-100 text-purple-800 rounded-md mb-1.5">ราคาสบายกระเป๋า</span>
+                                    <h3 class="text-xl font-extrabold text-slate-900">COPPER <span class="text-sky-600">SEAL</span></h3>
+                                </div>
+                                <div class="model-check w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center text-white text-xs">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-600 mt-2">ระบบ Inverter มาตรฐานสูง เย็นเร็ว ลมแรง ซ่อมบำรุงง่าย คุ้มค่าที่สุด</p>
+                            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-sky-700 flex items-center">
+                                <span>คลิกเพื่อเลือกรุ่นนี้</span>
+                                <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
+                            </div>
+                        </div>
+
+                    </div>
+                    <p class="text-xs text-rose-500 mt-2 hidden text-center" id="modelError">
+                        <i class="fas fa-exclamation-circle mr-1"></i> กรุณาคลิกเลือกซีรีส์แอร์อย่างน้อย 1 รุ่น
+                    </p>
+                </div>
+
+                <div id="step3" class="step-panel space-y-6">
+                    <div class="bg-sky-50/70 border-l-4 border-sky-600 p-4 rounded-r-xl">
+                        <h2 class="text-lg font-bold text-[#0f2444]">ขั้นตอนที่ 3: ช่องทางติดต่อกลับและความยินยอม</h2>
+                        <p class="text-xs sm:text-sm text-slate-600">ยืนยันข้อมูลเพื่อให้เจ้าหน้าที่จัดสรรข้อเสนอที่ตรงใจท่านที่สุด</p>
+                    </div>
+
+                    <!-- Contact Channel Preferences -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-800 mb-2">
+                            ช่องทางที่คุณสะดวกให้ทีมงานติดต่อกลับมากที่สุด
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="flex items-center p-3 border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                <input type="radio" name="contact_method" value="โทรศัพท์" checked class="w-4 h-4 text-sky-600 focus:ring-sky-500">
+                                <span class="ml-2.5 text-sm font-medium text-slate-800">โทรศัพท์</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                <input type="radio" name="contact_method" value="LINE" class="w-4 h-4 text-sky-600 focus:ring-sky-500">
+                                <span class="ml-2.5 text-sm font-medium text-slate-800">LINE</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                <input type="radio" name="contact_method" value="อีเมล" class="w-4 h-4 text-sky-600 focus:ring-sky-500">
+                                <span class="ml-2.5 text-sm font-medium text-slate-800">อีเมล</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Convenient Call Time -->
+                    <div>
+                        <label for="callTime" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                            ช่วงเวลาที่สะดวกรับสาย
+                        </label>
+                        <select id="callTime" name="convenient_time" class="readable-input w-full px-4 py-3 rounded-xl font-medium bg-white">
+                            <option value="สะดวกทุกช่วงเวลา">สะดวกทุกช่วงเวลา (09:00 - 18:00 น.)</option>
+                            <option value="ช่วงเช้า (09:00 - 12:00 น.)">ช่วงเช้า (09:00 - 12:00 น.)</option>
+                            <option value="ช่วงบ่าย (13:00 - 17:00 น.)">ช่วงบ่าย (13:00 - 17:00 น.)</option>
+                            <option value="ช่วงเย็นหลังเลิกงาน (17:00 - 19:00 น.)">ช่วงเย็นหลังเลิกงาน (17:00 - 19:00 น.)</option>
+                        </select>
+                    </div>
+
+                    <!-- Summary of selected model -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">รุ่นแอร์ที่คุณเลือก</span>
+                            <p id="summaryModelText" class="text-base font-bold text-sky-800">ยังไม่ได้เลือกรุ่น</p>
+                        </div>
+                        <button type="button" onclick="goToStep(1)" class="text-xs font-semibold text-sky-600 hover:text-sky-800 underline">
+                            แก้ไข
+                        </button>
+                    </div>
+
+                    <!-- PDPA Consent Box -->
+                    <div class="bg-sky-50/50 p-4 rounded-xl border border-sky-100">
+                        <label class="flex items-start cursor-pointer">
+                            <input type="checkbox" id="pdpaConsent" required class="mt-1 w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500">
+                            <span class="ml-3 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                                ข้าพเจ้ายินยอมให้บริษัท บีกริม แคเรียร์ (ประเทศไทย) จำกัด เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลนี้ เพื่อวัตถุประสงค์ในการติดต่อ ให้ข้อมูลสินค้า คำนวณขนาดบีทียู และส่งมอบข้อเสนอโปรโมชันพิเศษตาม <a href="#" class="text-sky-600 font-semibold underline">นโยบายความเป็นส่วนตัว (PDPA)</a> <span class="text-rose-500 font-bold">*</span>
+                            </span>
+                        </label>
+                        <p class="text-xs text-rose-500 mt-1.5 hidden" id="pdpaError">กรุณาทำเครื่องหมายยินยอมนโยบายความเป็นส่วนตัว</p>
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between gap-4">
+                    <!-- Back Button -->
+                    <button type="button" id="prevBtn" onclick="changeStep(-1)" class="hidden px-6 py-3 rounded-xl border-2 border-slate-300 text-slate-700 font-bold hover:bg-slate-100 hover:border-slate-400 transition flex items-center">
+                        <i class="fas fa-chevron-left mr-2 text-xs"></i> ย้อนกลับ
+                    </button>
+
+                    <div class="flex-grow"></div>
+
+                    <!-- Next Button -->
+                    <button type="button" id="nextBtn" onclick="changeStep(1)" class="px-8 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold shadow-lg shadow-sky-600/30 transition flex items-center">
+                        ขั้นตอนถัดไป <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                    </button>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="hidden px-8 py-3.5 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-extrabold shadow-xl shadow-sky-700/30 transition flex items-center">
+                        <span>ส่งแบบสอบถาม</span>
+                        <i class="fas fa-paper-plane ml-2.5"></i>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <footer class="relative z-10 w-full max-w-3xl mx-auto mt-6 text-center text-xs text-sky-200/70">
+        <p>© 2026 B.Grimm Carrier (Thailand) Ltd. All rights reserved.</p>
+        <p class="mt-1 font-light">ข้อมูลของคุณจะถูกเก็บรักษาอย่างปลอดภัยตามมาตรฐานความปลอดภัยระดับสากล</p>
+    </footer>
+
+    <script>
+        // Set your Google Apps Script Web App URL here
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+        let currentStep = 0;
+        const stepPanels = document.querySelectorAll('.step-panel');
+        const progressFill = document.getElementById('progressFill');
+        const dots = [
+            document.getElementById('stepDot1'),
+            document.getElementById('stepDot2'),
+            document.getElementById('stepDot3')
+        ];
+
+        // Initialize UI
+        renderStep(currentStep);
+
+        function renderStep(stepIndex) {
+            // Manage Active Panel
+            stepPanels.forEach((panel, idx) => {
+                panel.classList.toggle('active', idx === stepIndex);
+            });
+
+            // Manage Dots and Line Fill
+            dots.forEach((dot, idx) => {
+                if (idx < stepIndex) {
+                    dot.className = 'step-dot bg-emerald-500 text-white shadow-sm';
+                    dot.innerHTML = '<i class="fas fa-check text-xs"></i>';
+                } else if (idx === stepIndex) {
+                    dot.className = 'step-dot bg-sky-600 text-white shadow-md ring-4 ring-sky-100';
+                    dot.innerHTML = (idx + 1).toString();
+                } else {
+                    dot.className = 'step-dot bg-slate-200 text-slate-500';
+                    dot.innerHTML = (idx + 1).toString();
+                }
+            });
+
+            const percent = (stepIndex / (stepPanels.length - 1)) * 100;
+            progressFill.style.width = percent + '%';
+
+            // Button visibility
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (stepIndex === 0) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+
+            if (stepIndex === stepPanels.length - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function changeStep(direction) {
+            if (direction === 1) {
+                if (!validateCurrentStep()) return;
+            }
+
+            currentStep += direction;
+            if (currentStep < 0) currentStep = 0;
+            if (currentStep >= stepPanels.length) currentStep = stepPanels.length - 1;
+
+            renderStep(currentStep);
+        }
+
+        function goToStep(index) {
+            currentStep = index;
+            renderStep(currentStep);
+        }
+
+        function chooseModel(modelName, cardElement) {
+            document.querySelectorAll('.ac-model-card').forEach(c => {
+                c.classList.remove('selected');
+                const check = c.querySelector('.model-check');
+                if (check) {
+                    check.classList.remove('bg-sky-600', 'border-sky-600');
+                    check.classList.add('border-slate-300');
+                }
+            });
+
+            cardElement.classList.add('selected');
+            const activeCheck = cardElement.querySelector('.model-check');
+            if (activeCheck) {
+                activeCheck.classList.add('bg-sky-600', 'border-sky-600');
+                activeCheck.classList.remove('border-slate-300');
+            }
+
+            document.getElementById('selectedModel').value = modelName;
+            document.getElementById('summaryModelText').innerText = modelName;
+            document.getElementById('modelError').classList.add('hidden');
+        }
+
+        function validateCurrentStep() {
+            let isValid = true;
+
+            if (currentStep === 0) {
+                const name = document.getElementById('userName');
+                const nameError = document.getElementById('nameError');
+                if (!name.value.trim()) {
+                    name.classList.add('border-rose-500');
+                    nameError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    name.classList.remove('border-rose-500');
+                    nameError.classList.add('hidden');
+                }
+
+                const phone = document.getElementById('userPhone');
+                const phoneError = document.getElementById('phoneError');
+                const phoneRegex = /^[0-9]{9,10}$/;
+                const cleanedPhone = phone.value.replace(/[^0-9]/g, '');
+
+                if (!cleanedPhone || !phoneRegex.test(cleanedPhone)) {
+                    phone.classList.add('border-rose-500');
+                    phoneError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    phone.classList.remove('border-rose-500');
+                    phoneError.classList.add('hidden');
+                }
+
+                const location = document.getElementById('userLocation');
+                const locationError = document.getElementById('locationError');
+                if (!location.value) {
+                    location.classList.add('border-rose-500');
+                    locationError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    location.classList.remove('border-rose-500');
+                    locationError.classList.add('hidden');
+                }
+            }
+
+            if (currentStep === 1) {
+                const model = document.getElementById('selectedModel').value;
+                const modelError = document.getElementById('modelError');
+                if (!model) {
+                    modelError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    modelError.classList.add('hidden');
+                }
+            }
+
+            if (currentStep === 2) {
+                const pdpa = document.getElementById('pdpaConsent');
+                const pdpaError = document.getElementById('pdpaError');
+                if (!pdpa.checked) {
+                    pdpaError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    pdpaError.classList.add('hidden');
+                }
+            }
+
+            return isValid;
+        }
+
+        // Form Submission Handling
+        document.getElementById('surveyForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateCurrentStep()) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalContent = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังบันทึกข้อมูล...';
+
+            const payload = {
+                name: document.getElementById('userName').value.trim(),
+                phone: document.getElementById('userPhone').value.trim(),
+                email: document.getElementById('userEmail').value.trim() || 'ไม่ได้ระบุ',
+                location: document.getElementById('userLocation').value,
+                selected_model: document.getElementById('selectedModel').value,
+                contact_method: document.querySelector('input[name="contact_method"]:checked')?.value || 'โทรศัพท์',
+                convenient_time: document.getElementById('callTime').value,
+                submitted_at: new Date().toLocaleString('th-TH')
+            };
+
+            // If user hasn't set their actual Google Apps Script URL yet, simulate saving
+            if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                setTimeout(() => {
+                    handleSuccess(submitBtn, originalContent, payload);
+                }, 1200);
+            } else {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    handleSuccess(submitBtn, originalContent, payload);
+                })
+                .catch(error => {
+                    console.error('Error submitting to Google Sheets:', error);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalContent;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
+                        text: 'ไม่สามารถส่งข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง หรือติดต่อ Call Center 1454',
+                        confirmButtonColor: '#0284c7',
+                        confirmButtonText: 'ตกลง'
+                    });
+                });
+            }
+        });
+
+        function handleSuccess(btn, originalHtml, data) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกข้อมูลเรียบร้อยแล้ว!',
+                html: `
+                    <div class="text-left text-sm text-slate-600 bg-slate-50 p-4 rounded-xl mt-3 space-y-1.5 border border-slate-200">
+                        <p><b>คุณ:</b> ${data.name}</p>
+                        <p><b>เบอร์ติดต่อ:</b> ${data.phone}</p>
+                        <p><b>รุ่นที่สนใจ:</b> <span class="text-sky-700 font-bold">${data.selected_model}</span></p>
+                        <p><b>ช่วงเวลาสะดวก:</b> ${data.convenient_time}</p>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4">ผู้เชี่ยวชาญจาก บีกริม แคเรียร์ จะติดต่อกลับเพื่อมอบข้อเสนอพิเศษและคำนวณ BTU ฟรีโดยเร็วที่สุดครับ</p>
+                `,
+                confirmButtonColor: '#0284c7',
+                confirmButtonText: 'เสร็จสิ้น'
+            }).then(() => {
+                document.getElementById('surveyForm').reset();
+                document.getElementById('selectedModel').value = '';
+                document.querySelectorAll('.ac-model-card').forEach(c => c.classList.remove('selected'));
+                currentStep = 0;
+                renderStep(currentStep);
+            });
+        }
+
+        // Live input error cleanup
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', () => {
+                input.classList.remove('border-rose-500');
+                const err = input.parentElement.querySelector('.text-rose-500');
+                if (err) err.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
