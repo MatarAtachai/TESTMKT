@@ -10,13 +10,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Load Google Fonts (Sarabun & Prompt as fallbacks for Thai Sans Neue) -->
+    <!-- Load Google Fonts (Prompt & Sarabun as robust fallbacks for Thai Sans Neue) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* Thai Sans Neue with solid fallbacks */
+        /* Thai Sans Neue font configuration with modern fallbacks */
         @font-face {
             font-family: 'Thai Sans Neue';
             src: local('Thai Sans Neue'), local('ThaiSansNeue-Regular');
@@ -38,7 +38,7 @@
             letter-spacing: 0.015em;
         }
 
-        /* Subtle ambient glow */
+        /* Subtle ambient glow backdrop */
         .ambient-glow {
             position: fixed;
             top: 0;
@@ -51,14 +51,14 @@
             z-index: 0;
         }
 
-        /* Clean White Form Container with high contrast */
+        /* High-contrast crisp white container */
         .main-card {
             background-color: #ffffff;
             border-radius: 28px;
             box-shadow: 0 25px 50px -12px rgba(3, 11, 23, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
         }
 
-        /* Input styling with crisp border and high legibility */
+        /* Form inputs with elevated contrast */
         .readable-input {
             background-color: #f8fafc;
             border: 2px solid #cbd5e1;
@@ -78,7 +78,7 @@
             color: #94a3b8;
         }
 
-        /* Selectable Product Cards in Step 2 */
+        /* Model selector cards in Step 2 */
         .ac-model-card {
             border: 2px solid #e2e8f0;
             background: #ffffff;
@@ -108,7 +108,7 @@
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25), 0 14px 28px -10px rgba(2, 132, 199, 0.25);
         }
 
-        /* Steps animation */
+        /* Steps transition panels */
         .step-panel {
             display: none;
             opacity: 0;
@@ -122,7 +122,7 @@
             transform: translateY(0);
         }
 
-        /* Step circle styling */
+        /* Step circle indicators */
         .step-dot {
             width: 38px;
             height: 38px;
@@ -140,6 +140,7 @@
 
     <div class="ambient-glow"></div>
 
+    <!-- Simplified Campaign Header -->
     <header class="relative z-10 w-full max-w-3xl mx-auto mb-6">
         <div class="flex items-center justify-between bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3.5 rounded-full shadow-lg">
             <!-- Brand Badge -->
@@ -152,7 +153,7 @@
                 </span>
             </div>
 
-            <!-- Campaign Badge -->
+            <!-- Campaign Indicator Badge -->
             <div class="flex items-center space-x-1.5 text-xs sm:text-sm font-semibold text-cyan-300 bg-sky-950/60 px-3.5 py-1.5 rounded-full border border-cyan-400/25">
                 <i class="fas fa-gift text-cyan-400"></i>
                 <span>แบบสอบถามข้อเสนอพิเศษ</span>
@@ -163,7 +164,7 @@
     <main class="relative z-10 w-full max-w-3xl mx-auto flex-grow flex items-center justify-center">
         <div class="main-card w-full p-6 sm:p-10 md:p-12">
             
-            <!-- Title Section -->
+            <!-- Headline Section -->
             <div class="text-center mb-8 pb-4 border-b border-slate-100">
                 <span class="inline-block bg-sky-100 text-sky-800 text-xs sm:text-sm font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
                     Customer Preference Survey
@@ -172,16 +173,16 @@
                     ค้นหาแอร์ที่เหมาะกับคุณ พร้อมรับข้อเสนอสุดพิเศษ
                 </h1>
                 <p class="text-slate-600 text-sm sm:text-base mt-2 font-normal">
-                    กรุณากรอกข้อมูลเพียง 3 ขั้นตอนสั้น ๆ เพื่อให้ทีมงานส่งสิทธิพิเศษและข้อมูลรุ่นที่ตรงใจคุณมากที่สุด
+                    กรุณากรอกข้อมูลเพียง 3 ขั้นตอนสั้น ๆ เพื่อให้ทีมงานส่งสิทธิพิเศษและคำนวณ BTU ที่ตรงใจคุณมากที่สุด
                 </p>
             </div>
 
-            <!-- Progress Indicator -->
+            <!-- Interactive Progress Indicator -->
             <div class="mb-10 max-w-xl mx-auto">
                 <div class="flex items-center justify-between relative">
                     <!-- Background Line -->
                     <div class="absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0"></div>
-                    <!-- Active Fill Line -->
+                    <!-- Dynamic Progress Line -->
                     <div id="progressFill" class="absolute top-1/2 left-0 h-1 bg-sky-600 -translate-y-1/2 transition-all duration-300 z-0" style="width: 0%;"></div>
 
                     <!-- Step 1 Dot -->
@@ -206,13 +207,14 @@
 
             <form id="surveyForm" novalidate>
                 
-                <!-- STEP 1: Personal Info -->
+                <!-- STEP 1: Contact Information -->
                 <div id="step1" class="step-panel active space-y-6">
                     <div class="bg-sky-50/70 border-l-4 border-sky-600 p-4 rounded-r-xl">
                         <h2 class="text-lg font-bold text-[#0f2444]">ขั้นตอนที่ 1: ข้อมูลสำหรับการติดต่อกลับ</h2>
-                        <p class="text-xs sm:text-sm text-slate-600">กรอกข้อมูลเพื่อรับคำปรึกษาและการคำนวณ BTU ฟรีจากผู้เชี่ยวชาญ</p>
+                        <p class="text-xs sm:text-sm text-slate-600">กรอกข้อมูลเพื่อรับคำปรึกษาและสิทธิประโยชน์จากผู้เชี่ยวชาญ</p>
                     </div>
 
+                    <!-- Name Field -->
                     <div>
                         <label for="userName" class="block text-sm font-semibold text-slate-800 mb-1.5">
                             ชื่อ - นามสกุล <span class="text-rose-500 font-bold">*</span>
@@ -222,6 +224,7 @@
                         <p class="text-xs text-rose-500 mt-1 hidden" id="nameError">กรุณาระบุชื่อ-นามสกุล</p>
                     </div>
 
+                    <!-- Phone and Email Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label for="userPhone" class="block text-sm font-semibold text-slate-800 mb-1.5">
@@ -233,13 +236,14 @@
                         </div>
                         <div>
                             <label for="userEmail" class="block text-sm font-semibold text-slate-800 mb-1.5">
-                                อีเมล (สำหรับรับโบรชัวร์)
+                                อีเมล (สำหรับรับโบรชัวร์และโปรโมชัน)
                             </label>
                             <input type="email" id="userEmail" name="email" placeholder="example@email.com"
                                 class="readable-input w-full px-4 py-3.5 rounded-xl font-medium">
                         </div>
                     </div>
 
+                    <!-- Installation Province Field -->
                     <div>
                         <label for="userLocation" class="block text-sm font-semibold text-slate-800 mb-1.5">
                             จังหวัดที่ต้องการติดตั้ง <span class="text-rose-500 font-bold">*</span>
@@ -260,25 +264,25 @@
                     </div>
                 </div>
 
+                <!-- STEP 2: Series Selection -->
                 <div id="step2" class="step-panel space-y-6">
                     <div class="bg-sky-50/70 border-l-4 border-sky-600 p-4 rounded-r-xl">
                         <h2 class="text-lg font-bold text-[#0f2444]">ขั้นตอนที่ 2: เลือกรุ่นแอร์ที่คุณสนใจมากที่สุด</h2>
-                        <p class="text-xs sm:text-sm text-slate-600">คลิกเลือก 1 รุ่นที่ตรงกับสไตล์การแต่งห้องหรือการใช้งานของคุณ</p>
+                        <p class="text-xs sm:text-sm text-slate-600">คลิกเลือก 1 รุ่นที่ตรงกับสไตล์หรือการใช้งานของคุณ</p>
                     </div>
 
-                    <!-- Hidden Input to store selection -->
+                    <!-- Hidden Input to preserve selection value -->
                     <input type="hidden" id="selectedModel" name="selected_model" required>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         
                         <!-- Option 1: Beyond X -->
                         <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('Beyond X (หน้ากากลายไม้)', this)">
-                            <!-- Image Display Container -->
                             <div class="w-full h-36 bg-gradient-to-b from-amber-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-amber-100/60">
                                 <img src="images/beyond-x.png" 
                                      alt="Carrier Beyond X" 
                                      class="ac-thumb max-h-full object-contain filter drop-shadow-md"
-                                     onerror="this.onerror=null; this.src='https://placehold.co/400x220/fef3c7/92400e?text=Beyond+X+(Wood+Pattern)';">
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x220/fef3c7/92400e?text=Beyond+X+(Wood+Series)';">
                                 <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-amber-800 px-2 py-0.5 rounded-full shadow-xs">
                                     Wood Series
                                 </span>
@@ -302,7 +306,6 @@
 
                         <!-- Option 2: XInverter Plus -->
                         <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('XInverter Plus (ประหยัดไฟสูงสุด)', this)">
-                            <!-- Image Display Container -->
                             <div class="w-full h-36 bg-gradient-to-b from-sky-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-sky-100/60">
                                 <img src="images/xinverter-plus.png" 
                                      alt="Carrier XInverter Plus" 
@@ -331,7 +334,6 @@
 
                         <!-- Option 3: Copper Ion -->
                         <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('Copper Ion (คอยล์ทองแดง ฟอกอากาศ)', this)">
-                            <!-- Image Display Container -->
                             <div class="w-full h-36 bg-gradient-to-b from-emerald-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-emerald-100/60">
                                 <img src="images/copper-ion.png" 
                                      alt="Carrier Copper Ion" 
@@ -360,7 +362,6 @@
 
                         <!-- Option 4: Copper Seal -->
                         <div class="ac-model-card p-5 rounded-2xl flex flex-col justify-between" onclick="chooseModel('Copper Seal (เย็นฉ่ำ สบายกระเป๋า)', this)">
-                            <!-- Image Display Container -->
                             <div class="w-full h-36 bg-gradient-to-b from-purple-50/60 to-slate-50 rounded-xl mb-3 flex items-center justify-center p-2 relative overflow-hidden border border-purple-100/60">
                                 <img src="images/copper-seal.png" 
                                      alt="Carrier Copper Seal" 
@@ -393,13 +394,14 @@
                     </p>
                 </div>
 
+                <!-- STEP 3: Contact Preferences & Consent -->
                 <div id="step3" class="step-panel space-y-6">
                     <div class="bg-sky-50/70 border-l-4 border-sky-600 p-4 rounded-r-xl">
                         <h2 class="text-lg font-bold text-[#0f2444]">ขั้นตอนที่ 3: ช่องทางติดต่อกลับและความยินยอม</h2>
                         <p class="text-xs sm:text-sm text-slate-600">ยืนยันข้อมูลเพื่อให้เจ้าหน้าที่จัดสรรข้อเสนอที่ตรงใจท่านที่สุด</p>
                     </div>
 
-                    <!-- Contact Channel Preferences -->
+                    <!-- Contact Method Preferences -->
                     <div>
                         <label class="block text-sm font-semibold text-slate-800 mb-2">
                             ช่องทางที่คุณสะดวกให้ทีมงานติดต่อกลับมากที่สุด
@@ -420,7 +422,7 @@
                         </div>
                     </div>
 
-                    <!-- Convenient Call Time -->
+                    <!-- Convenient Call Time Selection -->
                     <div>
                         <label for="callTime" class="block text-sm font-semibold text-slate-800 mb-1.5">
                             ช่วงเวลาที่สะดวกรับสาย
@@ -433,7 +435,7 @@
                         </select>
                     </div>
 
-                    <!-- Summary of selected model -->
+                    <!-- Summary Card for Selected Model -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between">
                         <div>
                             <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">รุ่นแอร์ที่คุณเลือก</span>
@@ -449,22 +451,23 @@
                         <label class="flex items-start cursor-pointer">
                             <input type="checkbox" id="pdpaConsent" required class="mt-1 w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500">
                             <span class="ml-3 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                                ข้าพเจ้ายินยอมให้บริษัท บีกริม แคเรียร์ (ประเทศไทย) จำกัด เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลนี้ เพื่อวัตถุประสงค์ในการติดต่อ ให้ข้อมูลสินค้า คำนวณขนาดบีทียู และส่งมอบข้อเสนอโปรโมชันพิเศษตาม <a href="#" class="text-sky-600 font-semibold underline">นโยบายความเป็นส่วนตัว (PDPA)</a> <span class="text-rose-500 font-bold">*</span>
+                                ข้าพเจ้ายินยอมให้บริษัท บีกริม แคเรียร์ (ประเทศไทย) จำกัด เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลนี้ เพื่อวัตถุประสงค์ในการติดต่อ ให้ข้อมูลสินค้า คำนวณขนาดบีทียู และส่งมอบข้อเสนอโปรโมชันพิเศษตามนโยบายความเป็นส่วนตัว (PDPA) <span class="text-rose-500 font-bold">*</span>
                             </span>
                         </label>
                         <p class="text-xs text-rose-500 mt-1.5 hidden" id="pdpaError">กรุณาทำเครื่องหมายยินยอมนโยบายความเป็นส่วนตัว</p>
                     </div>
                 </div>
 
+                <!-- Bottom Step Controls -->
                 <div class="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between gap-4">
-                    <!-- Back Button -->
+                    <!-- Previous Step Button -->
                     <button type="button" id="prevBtn" onclick="changeStep(-1)" class="hidden px-6 py-3 rounded-xl border-2 border-slate-300 text-slate-700 font-bold hover:bg-slate-100 hover:border-slate-400 transition flex items-center">
                         <i class="fas fa-chevron-left mr-2 text-xs"></i> ย้อนกลับ
                     </button>
 
                     <div class="flex-grow"></div>
 
-                    <!-- Next Button -->
+                    <!-- Next Step Button -->
                     <button type="button" id="nextBtn" onclick="changeStep(1)" class="px-8 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold shadow-lg shadow-sky-600/30 transition flex items-center">
                         ขั้นตอนถัดไป <i class="fas fa-chevron-right ml-2 text-xs"></i>
                     </button>
@@ -480,14 +483,15 @@
         </div>
     </main>
 
+    <!-- Footer Copyright -->
     <footer class="relative z-10 w-full max-w-3xl mx-auto mt-6 text-center text-xs text-sky-200/70">
         <p>© 2026 B.Grimm Carrier (Thailand) Ltd. All rights reserved.</p>
         <p class="mt-1 font-light">ข้อมูลของคุณจะถูกเก็บรักษาอย่างปลอดภัยตามมาตรฐานความปลอดภัยระดับสากล</p>
     </footer>
 
     <script>
-        // Set your Google Apps Script Web App URL here
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdFPCcao19lSfHxTL7s15nw0wFXP9rar07EWb_zAL-6vqu1KVxLBEES50OTLErHoD0Jg/exec';
+        // Google Apps Script Web App Deployment URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz00y_lgZ4dnkK1oTF0sk9Z-p9bIilBtzdnrXlm0e-2LMmBhflWPxIzMQKtlZLczKHhSw/exec';
 
         let currentStep = 0;
         const stepPanels = document.querySelectorAll('.step-panel');
@@ -498,16 +502,16 @@
             document.getElementById('stepDot3')
         ];
 
-        // Initialize UI
+        // Initial setup
         renderStep(currentStep);
 
         function renderStep(stepIndex) {
-            // Manage Active Panel
+            // Update step panels visibility
             stepPanels.forEach((panel, idx) => {
                 panel.classList.toggle('active', idx === stepIndex);
             });
 
-            // Manage Dots and Line Fill
+            // Update step indicator states
             dots.forEach((dot, idx) => {
                 if (idx < stepIndex) {
                     dot.className = 'step-dot bg-emerald-500 text-white shadow-sm';
@@ -524,7 +528,7 @@
             const percent = (stepIndex / (stepPanels.length - 1)) * 100;
             progressFill.style.width = percent + '%';
 
-            // Button visibility
+            // Button visibility controls
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             const submitBtn = document.getElementById('submitBtn');
@@ -651,7 +655,7 @@
             return isValid;
         }
 
-        // Form Submission Handling
+        // Form Submission to Google Apps Script
         document.getElementById('surveyForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -663,6 +667,7 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังบันทึกข้อมูล...';
 
+            // Exact parameters mapped directly to Google Apps Script
             const payload = {
                 name: document.getElementById('userName').value.trim(),
                 phone: document.getElementById('userPhone').value.trim(),
@@ -674,35 +679,28 @@
                 submitted_at: new Date().toLocaleString('th-TH')
             };
 
-            // If user hasn't set their actual Google Apps Script URL yet, simulate saving
-            if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                setTimeout(() => {
-                    handleSuccess(submitBtn, originalContent, payload);
-                }, 1200);
-            } else {
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(payload)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    handleSuccess(submitBtn, originalContent, payload);
-                })
-                .catch(error => {
-                    console.error('Error submitting to Google Sheets:', error);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalContent;
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                handleSuccess(submitBtn, originalContent, payload);
+            })
+            .catch(error => {
+                console.error('Error submitting to Google Sheets:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalContent;
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
-                        text: 'ไม่สามารถส่งข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง หรือติดต่อ Call Center 1454',
-                        confirmButtonColor: '#0284c7',
-                        confirmButtonText: 'ตกลง'
-                    });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
+                    text: 'ไม่สามารถส่งข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง หรือติดต่อ Call Center 1454',
+                    confirmButtonColor: '#0284c7',
+                    confirmButtonText: 'ตกลง'
                 });
-            }
+            });
         });
 
         function handleSuccess(btn, originalHtml, data) {
@@ -732,7 +730,7 @@
             });
         }
 
-        // Live input error cleanup
+        // Real-time input validation cleanup
         document.querySelectorAll('input, select').forEach(input => {
             input.addEventListener('input', () => {
                 input.classList.remove('border-rose-500');
